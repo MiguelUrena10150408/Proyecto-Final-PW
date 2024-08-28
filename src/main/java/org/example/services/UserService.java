@@ -78,10 +78,9 @@ public class UserService {
      * @return El usuario autenticado o null si no coincide
      */
     public User authenticateUser(String username, String password) {
-        User user = findUserByUsername(username);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
-        }
-        return null;
+        // Ensure the query is correctly matching the user's credentials
+        Query<User> query = datastore.find(User.class).filter(Filters.eq("username", username), Filters.eq("password", password));; // Consider using hashing for passwords
+
+        return query.first();
     }
 }

@@ -13,6 +13,7 @@ public class Main {
         public static void main(String[] args) {
             Javalin app = Javalin.create(config -> {
                 config.staticFiles.add("/templates", Location.CLASSPATH);
+                config.staticFiles.add("/public", Location.CLASSPATH);
                 config.fileRenderer(new JavalinThymeleaf());
             }).start(7070);
 
@@ -26,6 +27,8 @@ public class Main {
             app.get("/map", FormController::showMap);
             app.get("/user/forms/{username}", FormController::listFormsByUser);
             app.delete("/form/{id}", FormController::deleteForm);
+            app.get("/form", FormController::showForm);
+            app.get("/listSubmissions", FormController::listSubmissions);
 
             // Configuración de WebSocket
             app.ws("/ws", ws -> {

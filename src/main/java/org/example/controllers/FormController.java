@@ -13,11 +13,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+ // Assuming you have a FormData model class
+
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.SignatureException;
+
+
+
 public class FormController {
 
     private static final FormService formService;
     private static final UserService userService;
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new Gson();// Your secure key
 
     // Mapa para almacenar las conexiones WebSocket
     private static final Map<WsContext, User> connectedClients = new ConcurrentHashMap<>();
@@ -28,11 +37,34 @@ public class FormController {
         userService = new UserService();
     }
 
+    // Method to render the form page if the user is logged in
+    public static void showForm(Context ctx) {
+        if (ctx.sessionAttribute("currentUser") != null) {
+            ctx.render("/templates/form.html");
+        } else {
+            ctx.redirect("/login"); // Redirect to login page if not logged in
+        }
+    }
+
     /**
      * Maneja la creación y el envío de un formulario desde la solicitud HTTP.
      *
      * @param ctx El contexto de Javalin que contiene la solicitud HTTP
      */
+
+    // Method to retrieve all form submissions with geographical information
+    public static void listSubmissions(Context ctx) {
+        if (ctx.sessionAttribute("currentUser") != null) {
+            // Retrieve all submissions from the database
+            List<Form> submissions = MongoConfig.getDatastore().find(Form.class).iterator().toList();
+
+            // Return the list of submissions as JSON
+            ctx.json(submissions);
+        } else {
+            ctx.status(401).result("Unauthorized");
+        }
+    }
+
     public static void submitForm(Context ctx) {
         String name = ctx.formParam("name");
         String sector = ctx.formParam("sector");
@@ -62,9 +94,14 @@ public class FormController {
      * @param ctx El contexto de Javalin que contiene la solicitud HTTP
      */
     public static void showMap(Context ctx) {
-        List<Form> formsWithGeo = formService.getAllFormsWithGeoPosition();
-        ctx.render("/templates/map.html", Map.of("forms", formsWithGeo));
+        // Directly render the map page if the user is logged in
+        if (ctx.sessionAttribute("currentUser") != null) {
+            ctx.render("/templates/map.html");
+        } else {
+            ctx.redirect("/login"); // Redirect to login page if not logged in
+        }
     }
+
 
     /**
      * Maneja la recepción de mensajes WebSocket para sincronización de datos.

@@ -4,59 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de Registros</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Archivo CSS personalizado -->
-    <link th:href="@{/css/style.css}" rel="stylesheet">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Custom CSS (if needed) -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 <body>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const username = localStorage.getItem('username');
-        const token = localStorage.getItem('authToken');
-
-        if (!username || !token) {
-            alert('No autenticado. Redirigiendo al inicio de sesión.');
-            window.location.href = '/login';
-        }
-    });
-</script>
-
 <div class="container mt-4">
     <h2 class="text-center">Mapa de Registros</h2>
-    <div id="map"></div>
+    <!-- Div container for the map -->
+    <div id="map" style="width: 100%; height: 500px;"></div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Archivo JS personalizado -->
-<script src="/public/js/app.js" th:src="@{/js/app.js}"></script>
-<script th:inline="javascript">
-    /* <![CDATA[ */
-    var map = L.map('map').setView([19.432608, -99.133209], 13); // Coordenadas iniciales
+<!-- Custom JS -->
+<script th:src="@{/js/app.js}"></script>
+<script>
+    // Initialize the map and set its view to the default center coordinates
+    var map = L.map('map').setView([19.432608, -99.133209], 13); // Default to Mexico City coordinates
 
+    // Add a tile layer to the map (using OpenStreetMap tiles)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    /* Ejemplo de puntos de geolocalización */
-    var points = [
-        /* Datos dinámicos podrían ser inyectados aquí si fuera necesario */
-        { lat: 19.432608, lng: -99.133209, name: "Registro 1" },
-        { lat: 19.436308, lng: -99.140209, name: "Registro 2" },
-        { lat: 19.429508, lng: -99.127109, name: "Registro 3" }
-    ];
-
-    points.forEach(point => {
-        L.marker([point.lat, point.lng]).addTo(map)
-            .bindPopup(point.name)
-            .openPopup();
-    });
-    /* ]]> */
+    // Fetch the list of submissions from the server
+    fetch('/listSubmissions', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Iterate over the fetched data and add markers to the map for each submission
+            data.forEach(submission => {
+                if (submission.geoPosition) {
+                    const [latitude, longitude] = submission.geoPosition.split(',').map(Number);
+                    // Add a marker for each submission with the retrieved latitude and longitude
+                    L.marker([latitude, longitude]).addTo(map)
+                        .bindPopup(`<b>${submission.name}</b><br>${submission.sector}<br>${submission.schoolLevel}`)
+                        .openPopup();
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
 </script>
 </body>
 </html>

@@ -3,9 +3,15 @@ package org.example.controllers;
 import org.example.models.User;
 import org.example.services.UserService;
 import io.javalin.http.Context;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
 
 public class UserController {
-
+    private static final String SECRET_KEY = "N2A33xaP7sm9Kqeh1F5Z2BK8t1PvNQgq6j3uROeIGz4rPsQfdE";
     private static final UserService userService = new UserService(); // Inicialización directa del servicio
 
     public static void loginPage(Context ctx) {
@@ -13,21 +19,28 @@ public class UserController {
     }
 
     public static void login(Context ctx) {
-        String username = ctx.formParam("username");
-        String password = ctx.formParam("password");
+        String username = ctx.formParam("username").trim();
+        String password = ctx.formParam("password").trim();
 
         if (username != null && password != null) {
             User user = userService.authenticateUser(username, password);
             if (user != null) {
-                ctx.sessionAttribute("currentUser", username);
-                ctx.redirect("/");
+                ctx.sessionAttribute("currentUser", username); // Set session attribute for logged-in user
+
+                // Response JSON indicating success
+                Map<String, Object> result = new HashMap<>();
+                result.put("success", true);
+                result.put("token", "dummy-token"); // Placeholder token
+                ctx.json(result);
             } else {
-                ctx.status(401).result("Nombre de usuario o contraseña incorrectos.");
+                ctx.status(401).json(Map.of("success", false, "error", "Nombre de usuario o contraseña incorrectos."));
             }
         } else {
-            ctx.status(400).result("Por favor, ingrese tanto el nombre de usuario como la contraseña.");
+            ctx.status(400).json(Map.of("success", false, "error", "Por favor, ingrese tanto el nombre de usuario como la contraseña."));
         }
     }
+
+
 
     public static void registerUser(Context ctx) {
         String username = ctx.formParam("username");
