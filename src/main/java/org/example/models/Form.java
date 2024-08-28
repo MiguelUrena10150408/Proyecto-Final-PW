@@ -5,7 +5,7 @@ import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
 import dev.morphia.annotations.Reference;
 
-// Define la entidad "forms" en MongoDB
+// Define la entidad forms en MongoDB
 @Entity("forms")
 public class Form {
 

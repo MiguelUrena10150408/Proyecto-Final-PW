@@ -11,7 +11,6 @@ public class MongoConfig {
 
     private static final String CONNECTION_STRING = "mongodb+srv://miguelura1:mongoDB28@cluster0.utxuopz.mongodb.net/"; // URL de conexión de MongoDB
     private static final String DATABASE_NAME = "ProyectoDFinal"; // Nombre de la base de datos
-
     private static Datastore datastore;
 
     /**

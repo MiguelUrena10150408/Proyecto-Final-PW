@@ -13,15 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
- // Assuming you have a FormData model class
-
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.SignatureException;
-
-
-
 public class FormController {
 
     private static final FormService formService;
@@ -32,12 +23,12 @@ public class FormController {
     private static final Map<WsContext, User> connectedClients = new ConcurrentHashMap<>();
 
     static {
-        // Inicialización de servicios utilizando el Datastore configurado en MongoConfig
+        // Inicialización de servicios
         formService = new FormService();
         userService = new UserService();
     }
 
-    // Method to render the form page if the user is logged in
+    // Método para renderizar el form si el usuario esta Logeado
     public static void showForm(Context ctx) {
         if (ctx.sessionAttribute("currentUser") != null) {
             ctx.render("/templates/form.html");

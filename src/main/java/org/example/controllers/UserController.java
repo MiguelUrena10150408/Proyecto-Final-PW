@@ -6,12 +6,7 @@ import io.javalin.http.Context;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Date;
-
 public class UserController {
-    private static final String SECRET_KEY = "N2A33xaP7sm9Kqeh1F5Z2BK8t1PvNQgq6j3uROeIGz4rPsQfdE";
     private static final UserService userService = new UserService(); // Inicialización directa del servicio
 
     public static void loginPage(Context ctx) {
@@ -25,9 +20,9 @@ public class UserController {
         if (username != null && password != null) {
             User user = userService.authenticateUser(username, password);
             if (user != null) {
-                ctx.sessionAttribute("currentUser", username); // Set session attribute for logged-in user
+                ctx.sessionAttribute("currentUser", username); // Establecer atributo de sesión para el usuario que ha iniciado sesión
 
-                // Response JSON indicating success
+                //Respuesta JSON que indica éxito
                 Map<String, Object> result = new HashMap<>();
                 result.put("success", true);
                 result.put("token", "dummy-token"); // Placeholder token

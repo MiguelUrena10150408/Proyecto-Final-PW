@@ -4,7 +4,7 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Property;
 
-// Define la entidad "users" en MongoDB
+// Define la entidad users en MongoDB
 @Entity("users")
 public class User {
 
