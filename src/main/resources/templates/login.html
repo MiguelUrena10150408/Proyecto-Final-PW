@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Archivo CSS personalizado -->
+    <link href="/public/css/style.css" th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <main class="form-signin text-center">
+        <form th:action="@{/login}" method="post">
+            <img class="mb-4" src="https://via.placeholder.com/72" alt="Logo" width="72" height="72">
+            <h1 class="h3 mb-3 fw-normal">Por favor, inicia sesión</h1>
+
+            <div class="form-floating">
+                <input type="text" class="form-control" id="username" name="username" placeholder="Usuario" required>
+                <label for="username">Usuario</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                <label for="password">Contraseña</label>
+            </div>
+
+            <button class="w-100 btn btn-lg btn-primary mt-3" type="submit">Iniciar Sesión</button>
+            <p th:if="${error}" th:text="${error}" class="text-danger mt-2"></p>
+            <p class="mt-5 mb-3 text-muted">&copy; 2024</p>
+        </form>
+    </main>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
