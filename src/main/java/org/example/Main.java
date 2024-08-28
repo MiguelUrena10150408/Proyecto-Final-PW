@@ -3,7 +3,6 @@ import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import org.example.controllers.FormController;
 import org.example.controllers.UserController;
-import io.javalin.websocket.WsContext;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
 public class Main {
